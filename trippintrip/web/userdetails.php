@@ -146,6 +146,8 @@ if (isset($_POST['delete'])) {
                             $name = $result['user_name'];
                             $email = $result['user_email'];
                             $phone = $result['user_phone'];
+                            $gender = $result['user_gender'];
+                            $bio = $result['user_bio'];
                             $address = $result['user_address'];
                             $regdate = $result['user_datereg'];
                             $otp = $result['otp'];
@@ -162,6 +164,7 @@ if (isset($_POST['delete'])) {
                             $triplocation = $result['trip_location'];
                             $start = $result['start_date'];
                             $end = $result['end_date'];
+                            $duration = $result['number_of_days'];
                         }
 
                         echo
@@ -177,6 +180,14 @@ if (isset($_POST['delete'])) {
                 <tr>
                   <th class='w3-indigo'>Phone</th>
                   <td style='width:60%'>$phone</td>
+                </tr>
+                <tr>
+                  <th class='w3-indigo'>Gender</th>
+                  <td style='width:60%'>$gender</td>
+                </tr>
+                <tr>
+                  <th class='w3-indigo'>Biography</th>
+                  <td style='width:60%'>$bio</td>
                 </tr>
                 <tr>
                   <th class='w3-indigo'>Address</th>
@@ -231,7 +242,8 @@ if (isset($_POST['delete'])) {
                             <th>Location</th>
                             <th>Trip Description</th>
                             <th>Start Date</th>
-                            <th>End Date></th>
+                            <th>End Date</th>
+                            <th>Duration (Days)</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -251,6 +263,9 @@ if (isset($_POST['delete'])) {
           </td>
           <td>
             $end
+          </td>
+          <td>
+            $duration
           </td>
           <td>
             <a href='tripdetail.php?id=" . $tripid . "' onclick=\"document.getElementById('newsdetails1').style.display='block';return false;\">
@@ -284,5 +299,4 @@ if (isset($_POST['delete'])) {
     </div>
     <p>Powered by Shyvonne Ho Yue Lynn (279733) Final Year Project 2023</p>
 </footer>
-
 </html>
