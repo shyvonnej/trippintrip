@@ -22,6 +22,16 @@ if (isset($_POST['submit'])) {
     $price = $_POST['att_price'];
     $desc = $_POST['att_desc'];
 
+    // Get the maximum value of the id column from the tbl_attraction table
+    $sql = "SELECT MAX(att_id) as max_id FROM tbl_attraction";
+    $result = $conn->query($sql);
+    $row = $result->fetch(PDO::FETCH_ASSOC);
+    $max_id = $row['max_id'];
+
+    // Set the auto_increment value of the id column to be the maximum value + 1
+    $sql = "ALTER TABLE tbl_attraction AUTO_INCREMENT = " . ($max_id + 1);
+    $conn->exec($sql);
+
     $stmt = $conn->prepare("INSERT INTO tbl_attraction (att_name, att_category, att_location, att_longtitude, att_latitude, att_opening, att_closing, state_id, att_price, att_desc) VALUES (:att_name, :att_category, :att_location, :att_longtitude, :att_latitude, :att_opening, :att_closing, :state_id, :att_price, :att_desc)");
 
     $stmt->bindValue(':att_name', $name, PDO::PARAM_STR);
@@ -31,22 +41,60 @@ if (isset($_POST['submit'])) {
     $stmt->bindValue(':att_latitude', $latitude, PDO::PARAM_STR);
     $stmt->bindValue(':att_opening', $opening, PDO::PARAM_STR);
     $stmt->bindValue(':att_closing', $closing, PDO::PARAM_STR);
-    $stmt->bindValue(':state_id', $stateid, PDO::PARAM_STR); 
+    $stmt->bindValue(':state_id', $stateid, PDO::PARAM_STR);
     $stmt->bindValue(':att_price', $price, PDO::PARAM_STR);
     $stmt->bindValue(':att_desc', $desc, PDO::PARAM_STR);
 
     if ($stmt->execute()) {
-        echo "<script>alert('Successfully Added New Attraction')</script>";
-        echo "<script>window.location.replace('attraction.php')</script>";
+        // Loop through uploaded files and handle each file separately
+        $target_dir = "../assets/attraction/";
+        $target_file_prefix = ($max_id+1) . '_';
+        $uploadOk = 1;
+        for ($i = 0; $i < count($_FILES["fileToUpload"]["name"]); $i++) {
+            $target_file = $target_dir . $target_file_prefix . ($i + 1) . ".png";
+            $imageFileType = strtolower(pathinfo($_FILES["fileToUpload"]["name"][$i], PATHINFO_EXTENSION));
+            $check = getimagesize($_FILES["fileToUpload"]["tmp_name"][$i]);
+            if ($check !== false) {
+                if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"][$i], $target_file)) {
+                    echo "<script>The file " . htmlspecialchars(
+                        basename(
+                            $target_file
+                        )
+                    ) . " has been uploaded.<br> </script>";
+                } else {
+                    echo "Sorry, there was an error uploading your file.";
+                    $uploadOk = 0;
+                }
+            } else {
+                echo "File is not an image.";
+                $uploadOk = 0;
+            }
+        }
+        if ($uploadOk) {
+            echo "<script>alert('Attraction added successfully');</script>";
+            echo "<script>window.location.replace('attractiondetails.php?id=" . ($max_id+1) . "')</script>";
+            exit();
+        } else {
+            $sql = "DELETE FROM tbl_attraction WHERE att_name = :att_name";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue(':att_name', $name, PDO::PARAM_STR);
+            $stmt->execute();
+            echo "<script>alert('Failed to add attraction. Please try again later.');</script>";
+            echo "<script>window.location.replace('addattraction.php')</script>";
+            exit();
+        }
     } else {
-        echo "<script>alert('Failed to Add Attraction')</script>";
+        echo "<script>alert('Failed to add attraction. Please try again later.');</script>";
         echo "<script>window.location.replace('addattraction.php')</script>";
+        exit();
     }
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>TrippinTrip Portal</title>
     <meta charset="UTF-8">
@@ -55,6 +103,38 @@ if (isset($_POST['submit'])) {
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function previewFiles() {
+            var preview = document.querySelector('#imagePreview');
+            var files = document.querySelector('input[type=file]').files;
+
+            function readAndPreview(file) {
+                // Make sure `file.name` matches our extensions criteria
+                if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+                    var reader = new FileReader();
+
+                    reader.addEventListener("load", function () {
+                        var image = new Image();
+                        image.height = 200;
+                        image.width = 200;
+                        image.title = file.name;
+                        image.src = this.result;
+                        image.style.marginRight = "10px";
+                        image.style.marginTop = "10px";
+                        image.style.marginBottom = "10px";
+                        image.style.marginLeft = "10px";
+                        preview.appendChild(image);
+                    }, false);
+
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            if (files) {
+                [].forEach.call(files, readAndPreview);
+            }
+        }
+    </script>
     <style>
         body,
         h1,
@@ -148,16 +228,19 @@ if (isset($_POST['submit'])) {
         <div style="display:flex; justify-content: center">
             <div class="w3-container w3-card w3-padding w3-margin" style="width:600px;margin:auto;text-align:left;">
                 <h3 class="w3-center">Add New Attraction</h3>
-                <form action="addattraction.php"  method="POST">
+                <form action="addattraction.php" method="POST" enctype="multipart/form-data">
+                    <div class="w3-container w3-center">
+                        <div id="imagePreview" style="margin-top: 10px; margin-bottom: 20px"></div>
+                        <label for="fileToUpload">Choose file:</label>
+                        <input type="file" name="fileToUpload[]" id="fileToUpload" multiple onchange="previewFiles()">
+                    </div>
                     <p style="display: flex; align-items: center;">
                         <label for="att_name" class="form-label" style="margin-top: 30px">Name:</label>
-                        <input type="text" name="att_name" class="form-field"
-                            style="margin-top: 30px"><br>
+                        <input type="text" name="att_name" class="form-field" style="margin-top: 30px"><br>
                     </p>
                     <p style="display: flex; align-items: center;">
                         <label for="att_category" class="form-label">Category:</label>
-                        <input type="text" name="att_category" 
-                            class="form-field"><br>
+                        <input type="text" name="att_category" class="form-field"><br>
                     </p>
                     <p style="display: flex; align-items: center;">
                         <label for="att_location" class="form-label">Location:</label>
@@ -166,13 +249,11 @@ if (isset($_POST['submit'])) {
                     </p>
                     <p style="display: flex; align-items: center;">
                         <label for="att_longtitute" class="form-label">Longtitute:</label>
-                        <input type="text" name="att_longtitude"
-                            class="form-field"><br>
+                        <input type="text" name="att_longtitude" class="form-field"><br>
                     </p>
                     <p style="display: flex; align-items: center;">
                         <label for="att_latitude" class="form-label">Latitude:</label>
-                        <input type="text" name="att_latitude" 
-                            class="form-field"><br>
+                        <input type="text" name="att_latitude" class="form-field"><br>
                     </p>
                     <p style="display: flex; align-items: center;">
                         <label for="att_opening" class="form-label">Opening Time:</label>
@@ -186,19 +267,19 @@ if (isset($_POST['submit'])) {
                         <label for="state_id" class="form-label">State:</label>
                         <span class="padding-right"></span>
                         <select id="state_id" name="state_id" class="form-field" style="height: 40px;">
-                            <option value="1" >Johor</option>
-                            <option value="2" >Kedah</option>
-                            <option value="3" >Kelantan</option>
-                            <option value="4" >Melaka</option>
-                            <option value="5" >Negeri Sembilan</option>
-                            <option value="6" >Pahang</option>
-                            <option value="7" >Perak</option>
-                            <option value="8" >Perlis</option>
-                            <option value="9" >Penang</option>
-                            <option value="10" >Sabah</option>
-                            <option value="11" >Sarawak</option>
-                            <option value="12" >Selangor</option>
-                            <option value="13" >Terengganu</option>
+                            <option value="1">Johor</option>
+                            <option value="2">Kedah</option>
+                            <option value="3">Kelantan</option>
+                            <option value="4">Melaka</option>
+                            <option value="5">Negeri Sembilan</option>
+                            <option value="6">Pahang</option>
+                            <option value="7">Perak</option>
+                            <option value="8">Perlis</option>
+                            <option value="9">Penang</option>
+                            <option value="10">Sabah</option>
+                            <option value="11">Sarawak</option>
+                            <option value="12">Selangor</option>
+                            <option value="13">Terengganu</option>
                         </select>
                     </p>
                     <p style="display: flex; align-items: center;">
@@ -211,7 +292,8 @@ if (isset($_POST['submit'])) {
                             style="height: 150px; resize: none; overflow: auto;"></textarea>
                     </p>
                     <div style="text-align: center;">
-                        <input class='w3-button w3-margin-top w3-indigo w3-round w3-center' type="submit" name="submit" value="Add Attraction">
+                        <input class='w3-button w3-margin-top w3-indigo w3-round w3-center' type="submit" name="submit"
+                            value="Add Attraction">
                     </div>
                 </form>
             </div>
