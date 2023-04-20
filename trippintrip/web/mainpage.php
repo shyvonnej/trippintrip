@@ -91,12 +91,12 @@ $current_admin = $result['admin_name'];
   </header>
 
   <!-- First Row Grid-->
-  <div class="w3-row-padding" style="margin-top: 50px; margin-left: 25px; margin-right: 25px;">
+  <div class="w3-row-padding" style="margin-top: 50px; margin-left: 80px; margin-right: 80px;">
     <a href="attraction.php">
       <div class="w3-third w3-container w3-margin-bottom">
         <img
           src="https://images.unsplash.com/photo-1501256504904-1fbe305bb538?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
-          alt="Attractions" style="width:100%; height: 300px;" class="w3-hover-opacity">
+          alt="Attractions" style="width:100%; height: 300px; object-fit: cover;" class="w3-hover-opacity">
         <div class="w3-container w3-white">
           <p><b>Attractions</b></p>
           <p>Adding new attractions, updating existing ones, and removing outdated or incorrect information.</p>
@@ -107,7 +107,7 @@ $current_admin = $result['admin_name'];
       <div class="w3-third w3-container w3-margin-bottom">
         <img
           src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
-          alt="Personas" style="width:100%; height: 300px;" class="w3-hover-opacity">
+          alt="Personas" style="width:100%; height: 300px; object-fit: cover;" class="w3-hover-opacity">
         <div class="w3-container w3-white">
           <p><b>Personas</b></p>
           <p>Adding new personas, updating existing ones, and removing outdated or incorrect information.</p>
@@ -118,7 +118,7 @@ $current_admin = $result['admin_name'];
       <div class="w3-third w3-container">
         <img
           src="https://plus.unsplash.com/premium_photo-1661573291619-7542ad8cf915?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
-          alt="Users" style="width:100%; height: 300px;" class="w3-hover-opacity">
+          alt="Users" style="width:100%; height: 300px; object-fit: cover;" class="w3-hover-opacity">
         <div class="w3-container w3-white">
           <p><b>Users</b></p>
           <p>Manage the registered user, review their preferences and review the user's profile.</p>
@@ -128,12 +128,12 @@ $current_admin = $result['admin_name'];
   </div>
 
   <!-- Second Row Grid-->
-  <div class="w3-row-padding" style="margin-top: 5px; margin-left: 25px; margin-right: 25px;">
+  <div class="w3-row-padding" style="margin-top: 5px; margin-left: 80px; margin-right: 80px;">
     <a href="admin.php">
       <div class="w3-third w3-container w3-margin-bottom">
         <img
           src="https://images.unsplash.com/photo-1579389083078-4e7018379f7e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
-          alt="Admin" style="width:100%; height: 300px;" class="w3-hover-opacity">
+          alt="Admin" style="width:100%; height: 300px; object-fit: cover;" class="w3-hover-opacity">
         <div class="w3-container w3-white">
           <p><b>Admin</b></p>
           <p>Manage the registered admin and review the admin's profile.</p>
@@ -144,7 +144,7 @@ $current_admin = $result['admin_name'];
       <div class="w3-third w3-container w3-margin-bottom">
         <img
           src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=815&q=80"
-          alt="Insights" style="width:100%; height: 300px;" class="w3-hover-opacity">
+          alt="Insights" style="width:100%; height: 300px; object-fit: cover;" class="w3-hover-opacity">
         <div class="w3-container w3-white">
           <p><b>Insights</b></p>
           <p>Insights generate reports on user preferences and selected personas.</p>
@@ -155,7 +155,7 @@ $current_admin = $result['admin_name'];
       <div class="w3-third w3-container">
         <img
           src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1031&q=80"
-          alt="Profile" style="width:100%; height: 300px;" class="w3-hover-opacity">
+          alt="Profile" style="width:100%; height: 300px; object-fit: cover;" class="w3-hover-opacity">
         <div class="w3-container w3-white">
           <p><b>Profile</b></p>
           <p>Review the personal profile.</p>
@@ -181,5 +181,4 @@ $current_admin = $result['admin_name'];
     </footer>
 
 </body>
-
 </html>
