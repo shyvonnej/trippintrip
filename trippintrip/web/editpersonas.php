@@ -173,15 +173,16 @@ if (isset($_GET['id'])) {
                     </p>
                     <p style="display: flex; align-items: center;">
                         <label for="prefered_activity" class="form-label">Preferred Activity:</label>
-                        <input type="text" name="prefered_activity" value="<?php echo $activity; ?>"
-                            class="form-field"><br>
+                        <textarea name="prefered_activity" class="form-field"
+                            style="height: 160px; resize: none; overflow: auto; white-space: pre-line;"><?php echo $activity; ?></textarea>
                     </p>
                     <p style="display: flex; align-items: center;">
                         <label for="image_url" class="form-label">Image URL:</label>
                         <input type="text" name="image_url" value="<?php echo $image; ?>" class="form-field"><br>
                     </p>
                     <div style="text-align: center;">
-                        <input class='w3-button w3-margin-top w3-indigo w3-round w3-center' type="submit" value="Save Changes">
+                        <input class='w3-button w3-margin-top w3-indigo w3-round w3-center' type="submit"
+                            value="Save Changes">
                     </div>
                     <br>
                 </form>
@@ -205,5 +206,4 @@ if (isset($_GET['id'])) {
         <p>Powered by Shyvonne Ho Yue Lynn (279733) Final Year Project 2023</p>
     </footer>
 </body>
-
 </html>
