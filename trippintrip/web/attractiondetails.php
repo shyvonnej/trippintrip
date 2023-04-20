@@ -54,7 +54,18 @@ if (isset($_POST['delete'])) {
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
     <style>
         body,
         h1,
@@ -94,7 +105,42 @@ if (isset($_POST['delete'])) {
         table {
             text-align: center;
             border-collapse: collapse;
-            width: 50%;
+            width: 70%;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 10%;
+            color: #fff;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            height: 20%;
+            background-color: rgba(58, 111, 220, 0.5);
+        }
+
+        .carousel-control-prev-icon:before,
+        .carousel-control-next-icon:before {
+            display: inline-block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            content: '';
+            background-image: url('path-to-icon.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            width: 20px;
+            height: 20px;
+        }
+
+        .carousel-control-prev-icon {
+            margin-left: -20px;
+        }
+
+        .carousel-control-next-icon {
+            margin-right: -20px;
         }
     </style>
 </head>
@@ -121,7 +167,7 @@ if (isset($_POST['delete'])) {
     <!-- Header with full-height image -->
     <header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
         <img class="w3-image w3-center"
-            src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=815&q=80"
+            src="https://images.unsplash.com/photo-1681519488861-be9e0a3e905a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
             alt="Homepage" style="width:1800px; height:300px; object-fit: cover; filter: brightness(50%);">
         <div class="w3-display-middle w3-margin-top w3-center">
             <h1>
@@ -133,8 +179,35 @@ if (isset($_POST['delete'])) {
     <div class="w3-container w3-padding-15 w3-center" id="content">
         <div style="overflow-x:auto;">
             <div class="container" style="text-align:center;">
-                <img src="../assets/attraction/<?php echo $attid; ?>_1.png" alt="Attraction" width="600" height="300"
-                    style="display:block; margin:auto; margin-top: 40px;">
+                <div id="attractionCarousel" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <?php for ($i = 1; $i <= 5; $i++) { ?>
+                            <li data-target="#attractionCarousel" data-slide-to="<?php echo $i - 1; ?>" <?php if ($i == 1) {
+                                     echo 'class="active"';
+                                 } ?>></li>
+                        <?php } ?>
+                    </ol>
+                    <div class="carousel-inner">
+                        <?php for ($i = 1; $i <= 5; $i++) { ?>
+                            <div class="carousel-item <?php if ($i == 1) {
+                                echo 'active';
+                            } ?>">
+                                <img src="../assets/attraction/<?php echo $attid; ?>_<?php echo $i; ?>.png" alt="Attraction"
+                                    width="600" height="400"
+                                    style="display:block; margin:auto; margin-top: 40px; object-fit: cover;">
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <a class="carousel-control-prev" href="#attractionCarousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#attractionCarousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+
                 <br>
                 <table id="attractions" style="border:1px solid black;margin-left:auto;margin-right:auto;">
                     <tbody>
@@ -197,12 +270,13 @@ if (isset($_POST['delete'])) {
                         value='Edit Attraction' />";
                         ?>
                         <form method="post">
-                                <input class='w3-button w3-margin-top w3-indigo w3-round w3-center' type='submit'
-                                    name='delete' value='Delete' />
-                            </form>
+                            <input class='w3-button w3-margin-top w3-indigo w3-round w3-center' type='submit'
+                                name='delete' value='Delete' />
+                        </form>
             </div>
             <br>
         </div>
+    </div>
 </body>
 
 <!-- Footer -->
