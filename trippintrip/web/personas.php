@@ -320,5 +320,4 @@ function truncate($string, $length, $dots = "...")
         <p>Powered by Shyvonne Ho Yue Lynn (279733) Final Year Project 2023</p>
     </footer>
 </body>
-
 </html>
