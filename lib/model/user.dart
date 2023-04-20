@@ -1,5 +1,5 @@
 class User { 
-  bool? isProfileComplete;
+  bool isProfileComplete = false;
   String? id; 
   String? name; 
   String? email; 
@@ -8,24 +8,25 @@ class User {
   String? regdate; 
   String? otp;
 
-User({
-  required this.isProfileComplete,
-  required this.id,
-  required this.name, 
-  required this.email, 
-  required this.phone, 
-  required this.address, 
-  required this.regdate, 
-  required this.otp,});
+  User({
+    required this.isProfileComplete,
+    required this.id,
+    required this.name, 
+    required this.email, 
+    required this.phone, 
+    required this.address, 
+    required this.regdate, 
+    required this.otp,
+  });
 
-User.fromJson(Map<String, dynamic> json) { 
-  id = json['id'];
-  name = json['name']; 
-  email = json['email']; 
-  phone = json['phone'];
-  address = json['address']; 
-  regdate = json['regdate']; 
-  otp = json['otp'];
-  isProfileComplete = json['isProfileComplete'] == "1" ? true : false;
+  User.fromJson(Map<String, dynamic> json) { 
+    id = json['id'];
+    name = json['name']; 
+    email = json['email']; 
+    phone = json['phone'];
+    address = json['address']; 
+    regdate = json['regdate']; 
+    otp = json['otp'];
+    isProfileComplete = json['isProfileComplete'] == true || json['isProfileComplete'] == 1;
   }
 }
