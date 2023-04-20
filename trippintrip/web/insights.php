@@ -71,6 +71,75 @@ $conn = null;
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function userreports() {
+            fetch('userreports.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/csv'
+                },
+                body: JSON.stringify({ /* put any data to send to the server here */ })
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(new Blob([blob]));
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'users_report.csv';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error(error); // handle any error here
+                });
+        }
+    </script>
+    <script>
+        function attractionreports() {
+            fetch('attractionreport.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/csv'
+                },
+                body: JSON.stringify({ /* put any data to send to the server here */ })
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(new Blob([blob]));
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'attraction_report.csv';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error(error); // handle any error here
+                });
+        }
+    </script>
+    <script>
+        function personareports() {
+            fetch('personareports.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/csv'
+                },
+                body: JSON.stringify({ /* put any data to send to the server here */ })
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(new Blob([blob]));
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'persona_report.csv';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error(error); // handle any error here
+                });
+        }
+    </script>
     <style>
         body,
         h1,
@@ -110,7 +179,21 @@ $conn = null;
         table {
             text-align: center;
             border-collapse: collapse;
-            width: 40%;
+            width: 80%;
+        }
+
+        button {
+            font-size: 16px;
+            padding: 12px 24px;
+            background-color: #728FCE;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2B3856;
         }
     </style>
 </head>
@@ -215,100 +298,20 @@ $conn = null;
     }
     echo "</table>";
     ?>
-
-
-    <div class="w3-container">
-        <h5>General User Location Stats</h5>
-        <p>Penang</p>
-        <div class="w3-grey">
-            <div class="w3-container w3-center w3-padding w3-green" style="width:25%">+25%</div>
-        </div>
-
-        <p>New Users</p>
-        <div class="w3-grey">
-            <div class="w3-container w3-center w3-padding w3-orange" style="width:50%">50%</div>
-        </div>
-
-        <p>Bounce Rate</p>
-        <div class="w3-grey">
-            <div class="w3-container w3-center w3-padding w3-red" style="width:75%">75%</div>
-        </div>
+    <h2 style="text-align:center"><b>Download Report in Excel</b></h2>
+    <div style="text-align: center;">
+        <h4>Users Report</h4>
+        <button onclick="userreports()">Download</button>
     </div>
-    <hr>
+    <div style="text-align: center;">
+        <h4>Attractions Report</h4>
+        <button onclick="attractionreports()">Download</button>
+    </div>
+    <div style="text-align: center;">
+        <h4>Persona Report</h4>
+        <button onclick="personareports()">Download</button>
+    </div>
 
-    <div class="w3-container">
-        <h5>Countries</h5>
-        <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
-            <tr>
-                <td>United States</td>
-                <td>65%</td>
-            </tr>
-            <tr>
-                <td>UK</td>
-                <td>15.7%</td>
-            </tr>
-            <tr>
-                <td>Russia</td>
-                <td>5.6%</td>
-            </tr>
-            <tr>
-                <td>Spain</td>
-                <td>2.1%</td>
-            </tr>
-            <tr>
-                <td>India</td>
-                <td>1.9%</td>
-            </tr>
-            <tr>
-                <td>France</td>
-                <td>1.5%</td>
-            </tr>
-        </table><br>
-        <button class="w3-button w3-dark-grey">More Countries  <i class="fa fa-arrow-right"></i></button>
-    </div>
-    <hr>
-    <div class="w3-container">
-        <h5>Recent Users</h5>
-        <ul class="w3-ul w3-card-4 w3-white">
-            <li class="w3-padding-16">
-                <img src="/w3images/avatar2.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
-                <span class="w3-xlarge">Mike</span><br>
-            </li>
-            <li class="w3-padding-16">
-                <img src="/w3images/avatar5.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
-                <span class="w3-xlarge">Jill</span><br>
-            </li>
-            <li class="w3-padding-16">
-                <img src="/w3images/avatar6.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
-                <span class="w3-xlarge">Jane</span><br>
-            </li>
-        </ul>
-    </div>
-    <hr>
-    <br>
-    <div class="w3-container w3-dark-grey w3-padding-32">
-        <div class="w3-row">
-            <div class="w3-container w3-third">
-                <h5 class="w3-bottombar w3-border-green">Demographic</h5>
-                <p>Language</p>
-                <p>Country</p>
-                <p>City</p>
-            </div>
-            <div class="w3-container w3-third">
-                <h5 class="w3-bottombar w3-border-red">System</h5>
-                <p>Browser</p>
-                <p>OS</p>
-                <p>More</p>
-            </div>
-            <div class="w3-container w3-third">
-                <h5 class="w3-bottombar w3-border-orange">Target</h5>
-                <p>Users</p>
-                <p>Active</p>
-                <p>Geo</p>
-                <p>Interests</p>
-            </div>
-        </div>
-    </div>
     <!-- Footer -->
     <footer class="w3-center w3-white w3-padding-64">
         <div class="w3-xlarge w3-section">
@@ -326,5 +329,4 @@ $conn = null;
     </footer>
 
 </body>
-
 </html>
