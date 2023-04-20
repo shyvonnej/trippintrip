@@ -61,24 +61,65 @@ if (isset($_GET['id'])) {
         $statement->bindValue(':att_desc', $desc);
         $statement->execute();
 
-        echo "<script>alert('Attraction Updated Successfully')</script>";
-        echo "<script>window.location.replace('attraction.php')</script>";
+        // Delete the old images
+        for ($i = 1; $i <= 5; $i++) {
+            $image_path = "../assets/attraction/" . basename( $attid . "$i.png");
+            if (file_exists($image_path)) {
+                unlink($image_path);
+            }
+        }
+
+        // Upload the new images
+        for ($i = 1; $i <= 5; $i++) {
+            if (isset($_FILES["att_name$i"]["name"]) && $_FILES["att_name$i"]["name"] != '') {
+                $target_dir = "../assets/attraction/";
+                $target_file = $target_dir . basename($_FILES["att_name$i"]["name"]);
+                $uploadOk = 1;
+                $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                // Check if image file is a actual image or fake image
+                $check = getimagesize($_FILES["att_name$i"]["tmp_name"]);
+                if ($check !== false) {
+                    $uploadOk = 1;
+                } else {
+                    $uploadOk = 0;
+                }
+
+                // Check if file already exists
+                if (file_exists($target_file)) {
+                    $uploadOk = 0;
+                }
+
+                // Check file size
+                if ($_FILES["att_name$i"]["size"] > 5000000) {
+                    $uploadOk = 0;
+                }
+
+                // Allow certain file formats
+                if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+                    $uploadOk = 0;
+                }
+
+                // Check if $uploadOk is set to 0 by an error
+                if ($uploadOk == 0) {
+                    echo "<script>alert('Sorry, your file was not uploaded.');</script>";
+                    // If everything is ok, try to upload file
+                } else {
+                    if (move_uploaded_file($_FILES["att_name$i"]["tmp_name"], $target_file)) {
+                        $query = "INSERT INTO tbl_images (att_id, image_path) VALUES (:att_id, :image_path)";
+                        $statement = $conn->prepare($query);
+                        $statement->bindValue(':att_id', $attid);
+                        $statement->bindValue(':image_path', $target_file);
+                        $statement->execute();
+                    } else {
+                        echo "<script>alert('Sorry, there was an error uploading your file.');</script>";
+                    }
+                }
+            }
+        }
+        echo "<script>alert('Attraction information updated successfully.');</script>";
+        echo "<script> window.location.replace('attraction.php')</script>";
     }
 }
-
-function uploadImage($filename)
-{
-    $target_dir = "../assets/admin/";
-    $target_file = $target_dir . $filename . ".png";
-
-    // Check if file already exists
-    if (file_exists($target_file)) {
-        unlink($target_file); // Remove the existing image file
-    }
-
-    move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file);
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -193,11 +234,14 @@ function uploadImage($filename)
         <div style="display:flex; justify-content: center">
             <div class="w3-container w3-card w3-padding w3-margin" style="width:600px;margin:auto;text-align:left;">
                 <h3 class="w3-center">Edit Attraction</h3>
-                <form action="editattraction.php?id=<?php echo $attid;?>"  method="POST">
+                <form action="editattraction.php?id=<?php echo $attid; ?>" method="POST">
                     <div class="w3-container w3-center">
-                        <img class="w3-image w3-margin" src="../assets/attraction/<?php echo $id; ?>.png"
-                            style="height:200px;width:200px; object-fit: cover;"><br>
-                        <input type="file" name="fileToUpload" onchange="previewFile()">
+                        <?php for ($i = 1; $i <= 5; $i++) { ?>
+                            <?php $filename = $attid . '_' . $i . '.png'; ?>
+                            <img class="w3-image w3-margin" src="../assets/attraction/<?php echo $filename; ?>"
+                                style="height:200px;width:200px; object-fit: cover;"><br>
+                            <input type="file" name="fileToUpload[]" onchange="previewFile(<?php echo $i; ?>)">
+                        <?php } ?>
                     </div>
                     <p style="display: flex; align-items: center;">
                         <label for="att_name" class="form-label" style="margin-top: 30px">Name:</label>
@@ -206,8 +250,7 @@ function uploadImage($filename)
                     </p>
                     <p style="display: flex; align-items: center;">
                         <label for="att_category" class="form-label">Category:</label>
-                        <input type="text" name="att_category" value="<?php echo $category;?>"
-                            class="form-field"><br>
+                        <input type="text" name="att_category" value="<?php echo $category; ?>" class="form-field"><br>
                     </p>
                     <p style="display: flex; align-items: center;">
                         <label for="att_location" class="form-label">Location:</label>
@@ -221,8 +264,7 @@ function uploadImage($filename)
                     </p>
                     <p style="display: flex; align-items: center;">
                         <label for="att_latitude" class="form-label">Latitude:</label>
-                        <input type="text" name="att_latitude" value="<?php echo $latitude; ?>"
-                            class="form-field"><br>
+                        <input type="text" name="att_latitude" value="<?php echo $latitude; ?>" class="form-field"><br>
                     </p>
                     <p style="display: flex; align-items: center;">
                         <label for="att_opening" class="form-label">Opening Time:</label>
@@ -275,7 +317,8 @@ function uploadImage($filename)
                     </p>
                     <br>
                     <div style="text-align: center;">
-                        <input class='w3-button w3-margin-top w3-indigo w3-round w3-center' type="submit" value="Save Changes">
+                        <input class='w3-button w3-margin-top w3-indigo w3-round w3-center' type="submit"
+                            value="Save Changes">
                     </div>
                 </form>
             </div>
