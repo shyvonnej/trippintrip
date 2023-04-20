@@ -191,6 +191,7 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200 && response.body != "failed") {
         final jsonResponse = json.decode(response.body);
         User user = User.fromJson(jsonResponse);
+        print("isProfileComplete: ${user.isProfileComplete}"); 
         Fluttertoast.showToast(
           msg: "Login Success",
           toastLength: Toast.LENGTH_SHORT,
