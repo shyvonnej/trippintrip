@@ -30,12 +30,14 @@ if (isset($_POST['delete'])) {
 
     echo "<script>alert('Persona has been deleted.');</script>";
     echo "<script>window.location.replace('personas.php');</script>";
-    
+
 } elseif (isset($_GET['id'])) {
     $pid = $_GET['id'];
-    $sql = "SELECT * FROM tbl_personas
-    WHERE persona_id = $pid
-    ";
+    $sql = "SELECT tp.*, pp.*, ts.state_name
+    FROM tbl_personas tp
+    LEFT JOIN persona_package pp ON tp.persona_id = pp.persona_id
+    LEFT JOIN tbl_states ts ON pp.state_id = ts.state_id
+    WHERE tp.persona_id = $pid";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $number_of_result = $stmt->rowCount();
@@ -50,8 +52,18 @@ if (isset($_POST['delete'])) {
         $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $rows = $stmt->fetchAll();
     } else {
-        echo "<script>alert('Attraction Not Found');</script>";
-        echo "<script>window.location.replace('attraction.php');</script>";
+        $sql_no_package = "SELECT * FROM tbl_personas WHERE persona_id = $pid";
+        $stmt_no_package = $conn->prepare($sql_no_package);
+        $stmt_no_package->execute();
+        $number_of_result_no_package = $stmt_no_package->rowCount();
+        
+        if ($number_of_result_no_package > 0) {
+            $result_no_package = $stmt_no_package->setFetchMode(PDO::FETCH_ASSOC);
+            $rows = $stmt_no_package->fetchAll();
+        } else {
+            echo "<script>alert('Persona Not Found');</script>";
+            echo "<script>window.location.replace('personas.php');</script>";
+        }
     }
 } else {
     echo "<script>alert('Page Error');</script>";
@@ -166,6 +178,11 @@ if (isset($_POST['delete'])) {
                             $image = $result['image_url'];
                             $created = $result['created_at'];
                             $updated = $result['updated_at'];
+                            $packid = $result['package_id'];
+                            $packname = $result['package_name'];
+                            $packdate = $result['created'];
+                            $stateid = $result['state_id'];
+                            $statename = $result['state_name'];
                         }
 
                         echo
@@ -193,6 +210,29 @@ if (isset($_POST['delete'])) {
                 <tr>
                   <th class='w3-indigo'>Updated At</th>
                   <td style='width:60%'>$updated</td>
+                </tr>
+                    </tbody>
+                </table>
+                <h3 style='text-align:center; margin-top: 30px;'><b>User Personal Preferences</b></h3>
+                <table id='package' style='border:1px solid black;margin-left:auto;margin-right:auto;'>
+                <thead>
+                        <tr>
+                            <th>Package Name</th>
+                            <th>Created At</th>
+                            <th>State</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                <tbody>
+                <tr>
+                  <td>$packname</td>
+                  <td>$packdate</td>
+                  <td>$statename</td>
+                  <td>
+            <a href='personatrip.php?id=" . $packid . "' onclick=\"document.getElementById('newsdetails1').style.display='block';return false;\">
+              <button style='margin-bottom:5px' class='fa fa-newspaper-o'></button>
+            </a>
+          </td>
                 </tr>
                     </tbody>
                 </table>
